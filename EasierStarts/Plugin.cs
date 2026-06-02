@@ -17,7 +17,7 @@ public class Plugin : BaseUnityPlugin
     internal static Plugin Instance;
     internal static ManualLogSource Log;
 
-    internal static ConfigEntry<int> DefibrosPerLevel;
+    internal static ConfigEntry<int> DefibrosPerPlayer;
     internal static ConfigEntry<int> StorePriceOverride;
 
     private Harmony _harmony;
@@ -29,10 +29,10 @@ public class Plugin : BaseUnityPlugin
         Log = Logger;
         Log.LogInfo($"{PluginName} v{PluginVersion} is loading...");
 
-        DefibrosPerLevel = Config.Bind(
-            "Defibro", "DefibrosPerLevel", 1,
+        DefibrosPerPlayer = Config.Bind(
+            "Defibro", "DefibrosPerPlayer", 1,
             new ConfigDescription(
-                "How many free Defibros are spawned at the truck at the start of every level. 0 disables the free grant entirely. Default 1.",
+                "How many free Defibros to spawn at the truck PER PLAYER at the start of every level — the total scales with lobby size (so a 4-player lobby gets 4x this). 0 disables the free grant entirely. Default 1 = one Defibro per player.",
                 new AcceptableValueRange<int>(0, 10)));
 
         StorePriceOverride = Config.Bind(
