@@ -24,7 +24,12 @@ internal static class DefibroPrice
         if (ShopManager.instance == null) return; // only re-price Defibros in the shop
         var item = ItemRef(attr);
         if (item == null || item.name != DefibroSoName) return;
-        ValueRef(attr) = price;
+        // ItemAttributes.value is in THOUSANDS — the shop UI shows "$" + value + "K", so a $44,000
+        // Defibro has value == 44. StorePriceOverride is a dollar amount, so convert (round to the
+        // nearest $1,000). Without this the price would be 1000x too high.
+        int v = (price + 500) / 1000;
+        if (v < 1) v = 1;
+        ValueRef(attr) = v;
     }
 }
 

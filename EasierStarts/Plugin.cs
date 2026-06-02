@@ -38,7 +38,7 @@ public class Plugin : BaseUnityPlugin
         StorePriceOverride = Config.Bind(
             "Defibro", "StorePriceOverride", 10000,
             new ConfigDescription(
-                "Shop price for the Defibro. 0 leaves the vanilla price (~$44,000) untouched; any value above 0 forces that shop price. Default 10000.",
+                "Shop price for the Defibro, in DOLLARS (rounded to the nearest $1,000 — the game prices items in $1K steps). 0 leaves the vanilla price (~$44,000) untouched; any value above 0 forces that price. Default 10000 = $10,000.",
                 new AcceptableValueRange<int>(0, 100000)));
 
         _harmony = new Harmony(PluginGuid);
