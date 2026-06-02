@@ -1,0 +1,25 @@
+# Build output
+bin/
+obj/
+*.user
+*.suo
+
+# IDE
+.vs/
+.idea/
+.vscode/
+
+# Local-only content (excluded from any future public repo)
+decompiled/
+docs/
+.claude/
+
+# BepInEx generated configs
+*.cfg
+
+# Upload bundles
+*.zip
+
+# OS
+Thumbs.db
+.DS_Store

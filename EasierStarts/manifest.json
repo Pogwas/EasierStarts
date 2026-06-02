@@ -1,0 +1,9 @@
+{
+  "name": "EasierStarts",
+  "version_number": "0.1.0",
+  "website_url": "",
+  "description": "Run-start QoL for R.E.P.O.: free Defibros at the truck each level, plus a configurable Defibro shop price.",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2305"
+  ]
+}
