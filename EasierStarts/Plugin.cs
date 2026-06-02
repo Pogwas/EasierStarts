@@ -1,5 +1,9 @@
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
+using HarmonyLib;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace EasierStarts;
 
@@ -13,11 +17,47 @@ public class Plugin : BaseUnityPlugin
     internal static Plugin Instance;
     internal static ManualLogSource Log;
 
+    internal static ConfigEntry<int> DefibrosPerLevel;
+    internal static ConfigEntry<int> StorePriceOverride;
+
+    private Harmony _harmony;
+    private static GameObject _behaviourGO;
+
     private void Awake()
     {
         Instance = this;
         Log = Logger;
         Log.LogInfo($"{PluginName} v{PluginVersion} is loading...");
+
+        DefibrosPerLevel = Config.Bind(
+            "Defibro", "DefibrosPerLevel", 1,
+            new ConfigDescription(
+                "How many free Defibros are spawned at the truck at the start of every level. 0 disables the free grant entirely. Default 1.",
+                new AcceptableValueRange<int>(0, 10)));
+
+        StorePriceOverride = Config.Bind(
+            "Defibro", "StorePriceOverride", 10000,
+            new ConfigDescription(
+                "Shop price for the Defibro. 0 leaves the vanilla price (~$44,000) untouched; any value above 0 forces that shop price. Default 10000.",
+                new AcceptableValueRange<int>(0, 100000)));
+
+        _harmony = new Harmony(PluginGuid);
+        _harmony.PatchAll();
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         Log.LogInfo($"{PluginName} loaded successfully.");
+    }
+
+    // REPO destroys DontDestroyOnLoad objects at boot, so the behaviour is (re)created
+    // on every scene load if it has gone missing.
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (_behaviourGO == null)
+        {
+            _behaviourGO = new GameObject("EasierStarts.Behaviour", typeof(EasierStartsBehaviour));
+            DontDestroyOnLoad(_behaviourGO);
+            Log.LogDebug($"[EasierStarts] behaviour (re)created after scene '{scene.name}'");
+        }
     }
 }
