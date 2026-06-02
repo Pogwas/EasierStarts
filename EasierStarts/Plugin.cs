@@ -18,7 +18,7 @@ public class Plugin : BaseUnityPlugin
     internal static ManualLogSource Log;
 
     internal static ConfigEntry<int> DefibrosPerPlayer;
-    internal static ConfigEntry<int> StorePriceOverride;
+    internal static ConfigEntry<int> StorePrice;
 
     private Harmony _harmony;
     private static GameObject _behaviourGO;
@@ -35,8 +35,8 @@ public class Plugin : BaseUnityPlugin
                 "How many free Defibros to spawn at the truck PER PLAYER at the start of every level — the total scales with lobby size (so a 4-player lobby gets 4x this). 0 disables the free grant entirely. Default 1 = one Defibro per player.",
                 new AcceptableValueRange<int>(0, 10)));
 
-        StorePriceOverride = Config.Bind(
-            "Defibro", "StorePriceOverride", 5000,
+        StorePrice = Config.Bind(
+            "Defibro", "StorePrice", 5000,
             new ConfigDescription(
                 "Shop price for the Defibro, in DOLLARS. 0 leaves the vanilla price (~$44,000) untouched; otherwise it forces the chosen price. Steps in $5,000 increments up to $50,000. Default 5000 = $5,000.",
                 new AcceptableValueList<int>(0, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000)));

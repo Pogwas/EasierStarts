@@ -18,7 +18,7 @@ internal static class DefibroPrice
     // Applies the configured price override to a Defibro's ItemAttributes.value, if applicable.
     internal static void Apply(ItemAttributes attr)
     {
-        int price = Plugin.StorePriceOverride.Value;
+        int price = Plugin.StorePrice.Value;
         if (price <= 0) return;                   // 0 = leave the vanilla price untouched
         if (attr == null) return;
         if (ShopManager.instance == null) return; // only re-price Defibros in the shop
