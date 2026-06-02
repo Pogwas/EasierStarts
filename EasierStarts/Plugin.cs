@@ -36,10 +36,10 @@ public class Plugin : BaseUnityPlugin
                 new AcceptableValueRange<int>(0, 10)));
 
         StorePriceOverride = Config.Bind(
-            "Defibro", "StorePriceOverride", 10000,
+            "Defibro", "StorePriceOverride", 5000,
             new ConfigDescription(
-                "Shop price for the Defibro, in DOLLARS (rounded to the nearest $1,000 — the game prices items in $1K steps). 0 leaves the vanilla price (~$44,000) untouched; any value above 0 forces that price. Default 10000 = $10,000.",
-                new AcceptableValueRange<int>(0, 100000)));
+                "Shop price for the Defibro, in DOLLARS. 0 leaves the vanilla price (~$44,000) untouched; otherwise it forces the chosen price. Steps in $5,000 increments up to $50,000. Default 5000 = $5,000.",
+                new AcceptableValueList<int>(0, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000)));
 
         _harmony = new Harmony(PluginGuid);
         _harmony.PatchAll();
