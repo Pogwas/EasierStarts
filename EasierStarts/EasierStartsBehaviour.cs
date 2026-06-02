@@ -7,6 +7,6 @@ internal class EasierStartsBehaviour : MonoBehaviour
 {
     private void Update()
     {
-        // DefibroGranter.Tick() is wired in here in Task 4.
+        DefibroGranter.Tick();
     }
 }
