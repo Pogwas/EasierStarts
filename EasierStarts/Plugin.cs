@@ -17,6 +17,7 @@ public class Plugin : BaseUnityPlugin
     internal static Plugin Instance;
     internal static ManualLogSource Log;
 
+    internal static ConfigEntry<int> DefibrosBase;
     internal static ConfigEntry<int> DefibrosPerPlayer;
     internal static ConfigEntry<int> StorePrice;
 
@@ -29,10 +30,16 @@ public class Plugin : BaseUnityPlugin
         Log = Logger;
         Log.LogInfo($"{PluginName} v{PluginVersion} is loading...");
 
+        DefibrosBase = Config.Bind(
+            "Defibro", "DefibrosBase", 1,
+            new ConfigDescription(
+                "Flat number of free Defibros spawned at the truck each level, regardless of lobby size. Total granted = DefibrosBase + DefibrosPerPlayer x player count. Default 1.",
+                new AcceptableValueRange<int>(0, 10)));
+
         DefibrosPerPlayer = Config.Bind(
             "Defibro", "DefibrosPerPlayer", 1,
             new ConfigDescription(
-                "How many free Defibros to spawn at the truck PER PLAYER at the start of every level — the total scales with lobby size (so a 4-player lobby gets 4x this). 0 disables the free grant entirely. Default 1 = one Defibro per player.",
+                "Extra free Defibros per player, added on top of DefibrosBase (total = DefibrosBase + this x player count). With both at the default 1: solo = 2, a 4-player lobby = 5. 0 = no per-player scaling. Default 1.",
                 new AcceptableValueRange<int>(0, 10)));
 
         StorePrice = Config.Bind(

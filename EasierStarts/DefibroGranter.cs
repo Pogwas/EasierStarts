@@ -17,8 +17,9 @@ internal static class DefibroGranter
 
     public static void Tick()
     {
+        int flatBase = Plugin.DefibrosBase.Value;
         int perPlayer = Plugin.DefibrosPerPlayer.Value;
-        if (perPlayer <= 0) return;
+        if (flatBase <= 0 && perPlayer <= 0) return;
         if (_permanentGiveup) return;
         if (!SemiFunc.RunIsLevel()) return;
         if (!SemiFunc.IsMasterClientOrSingleplayer()) return;
@@ -55,7 +56,8 @@ internal static class DefibroGranter
         // Scale the grant by lobby size: DefibrosPerPlayer for each player in the run.
         int players = SemiFunc.PlayerGetList()?.Count ?? 1;
         if (players < 1) players = 1;
-        int count = perPlayer * players;
+        int count = flatBase + perPlayer * players;
+        if (count <= 0) return;
 
         Vector3 basePos = truck.transform.position + Vector3.up * 0.5f;
         Quaternion rot = truck.transform.rotation;
@@ -74,6 +76,6 @@ internal static class DefibroGranter
                 Plugin.Log.LogWarning($"[Defibro] Spawn {i + 1}/{count} threw: {ex.GetType().Name}: {ex.Message}");
             }
         }
-        Plugin.Log.LogInfo($"[Defibro] Granted {spawned}/{count} free Defibro(s) at the truck ({perPlayer}/player x {players} player(s)).");
+        Plugin.Log.LogInfo($"[Defibro] Granted {spawned}/{count} free Defibro(s) at the truck (base {flatBase} + {perPlayer}/player x {players} player(s)).");
     }
 }
