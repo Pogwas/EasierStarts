@@ -38,8 +38,8 @@ public class Plugin : BaseUnityPlugin
         StorePrice = Config.Bind(
             "Defibro", "StorePrice", 5000,
             new ConfigDescription(
-                "Shop price for the Defibro, in DOLLARS — range 0 to 50,000 (rounded to the nearest $1,000). 0 leaves the vanilla price (~$44,000) untouched; otherwise it forces the chosen price. Default 5000 = $5,000.",
-                new AcceptableValueRange<int>(0, 50000)));
+                "Shop price for the Defibro, in DOLLARS. 0 leaves the vanilla price (~$44,000) untouched; otherwise it forces the chosen price. Steps in $5,000 increments up to $50,000. Default 5000 = $5,000.",
+                new AcceptableValueList<int>(0, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000)));
 
         _harmony = new Harmony(PluginGuid);
         _harmony.PatchAll();
