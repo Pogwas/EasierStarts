@@ -12,7 +12,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "com.pogwas.easierstarts";
     public const string PluginName = "Easier Starts";
-    public const string PluginVersion = "0.1.0";
+    public const string PluginVersion = "0.2.0";
 
     internal static Plugin Instance;
     internal static ManualLogSource Log;
@@ -20,6 +20,10 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<int> DefibrosBase;
     internal static ConfigEntry<int> DefibrosPerPlayer;
     internal static ConfigEntry<int> StorePrice;
+
+    internal static ConfigEntry<bool> FreeItemsEnabled;
+    internal static ConfigEntry<string> FreeItems;
+    internal static ConfigEntry<bool> FreeItemsFirstLevelOnly;
 
     private Harmony _harmony;
     private static GameObject _behaviourGO;
@@ -47,6 +51,18 @@ public class Plugin : BaseUnityPlugin
             new ConfigDescription(
                 "Defibro shop price in thousands of dollars — the shown number x1000 is the price (e.g. 5 = $5,000, 50 = $50,000). 0 leaves the vanilla price (~$44,000) untouched. Range 0-50, +$1,000 per step. Default 5 = $5,000.",
                 new AcceptableValueRange<int>(0, 50)));
+
+        FreeItemsEnabled = Config.Bind(
+            "Free Items", "Enabled", true,
+            "Master toggle for the free-item grant. When true, the items in the Items list are spawned at the truck (level 1 only by default — see FirstLevelOnly).");
+
+        FreeItems = Config.Bind(
+            "Free Items", "Items", "Item Gun Tranq:1/player",
+            "Comma-separated list of items to free-grant at the truck. Each entry is 'name:count' (a flat count) or 'name:count/player' (count multiplied by the number of players). 'name' matches an item's asset name or display name (e.g. 'Item Gun Tranq' / 'Tranq Gun'; a partial name like 'tranq' also works). Default grants one Tranq Gun per player. Leave empty to grant nothing. Example: \"Item Gun Tranq:1/player, Item Health Pack Small:2\".");
+
+        FreeItemsFirstLevelOnly = Config.Bind(
+            "Free Items", "FirstLevelOnly", true,
+            "When true (default), the items are granted only on the first level of a run (a run-start leg-up). When false, they are re-granted at the truck every level (items don't carry across levels, so this keeps a starter weapon always available).");
 
         _harmony = new Harmony(PluginGuid);
         _harmony.PatchAll();

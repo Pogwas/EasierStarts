@@ -8,5 +8,6 @@ internal class EasierStartsBehaviour : MonoBehaviour
     private void Update()
     {
         DefibroGranter.Tick();
+        FreeItemGranter.Tick();
     }
 }
