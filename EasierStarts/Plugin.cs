@@ -36,10 +36,10 @@ public class Plugin : BaseUnityPlugin
                 new AcceptableValueRange<int>(0, 10)));
 
         StorePrice = Config.Bind(
-            "Defibro", "StorePrice", 1,
+            "Defibro", "StorePrice (x1000)", 5,
             new ConfigDescription(
-                "Defibro shop price in units of $5,000 (slider 0-10, +$5,000 per step): 0 = leave the vanilla price (~$44,000) untouched, 1 = $5,000, 2 = $10,000, ... 10 = $50,000. Default 1 = $5,000.",
-                new AcceptableValueRange<int>(0, 10)));
+                "Defibro shop price in thousands of dollars — the shown number x1000 is the price (e.g. 5 = $5,000, 50 = $50,000). 0 leaves the vanilla price (~$44,000) untouched. Range 0-50, +$1,000 per step. Default 5 = $5,000.",
+                new AcceptableValueRange<int>(0, 50)));
 
         _harmony = new Harmony(PluginGuid);
         _harmony.PatchAll();
