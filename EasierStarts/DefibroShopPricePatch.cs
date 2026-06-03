@@ -18,18 +18,16 @@ internal static class DefibroPrice
     // Applies the configured price override to a Defibro's ItemAttributes.value, if applicable.
     internal static void Apply(ItemAttributes attr)
     {
-        int price = Plugin.StorePrice.Value;
-        if (price <= 0) return;                   // 0 = leave the vanilla price untouched
+        int units = Plugin.StorePrice.Value;       // 0-10, each unit = $5,000
+        if (units <= 0) return;                     // 0 = leave the vanilla price untouched
         if (attr == null) return;
-        if (ShopManager.instance == null) return; // only re-price Defibros in the shop
+        if (ShopManager.instance == null) return;   // only re-price Defibros in the shop
         var item = ItemRef(attr);
         if (item == null || item.name != DefibroSoName) return;
-        // ItemAttributes.value is in THOUSANDS — the shop UI shows "$" + value + "K", so a $44,000
-        // Defibro has value == 44. StorePriceOverride is a dollar amount, so convert (round to the
-        // nearest $1,000). Without this the price would be 1000x too high.
-        int v = (price + 500) / 1000;
-        if (v < 1) v = 1;
-        ValueRef(attr) = v;
+        // ItemAttributes.value is in THOUSANDS (the shop UI shows "$" + value + "K", so a $44,000
+        // Defibro has value == 44). Each StorePrice unit is $5,000 = 5 thousands, so value = units * 5
+        // (e.g. 2 -> $10,000 -> value 10 -> "$10K").
+        ValueRef(attr) = units * 5;
     }
 }
 
