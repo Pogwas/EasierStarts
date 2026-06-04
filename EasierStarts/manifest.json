@@ -2,7 +2,7 @@
   "name": "EasierStarts",
   "version_number": "0.2.0",
   "website_url": "https://github.com/Pogwas/EasierStarts",
-  "description": "Run-start quality-of-life for R.E.P.O. (any lobby size): free Defibros at the truck with a configurable shop price, plus a configurable list of free starter items spawned at the truck.",
+  "description": "Run-start quality-of-life for R.E.P.O. (any lobby size): free Defibros at the truck with a configurable shop price, plus a configurable free starter weapon spawned at the truck.",
   "dependencies": [
     "BepInEx-BepInExPack-5.4.2305"
   ]
