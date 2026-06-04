@@ -7,7 +7,7 @@ Every gameplay value is exposed as a config entry. Tune to taste.
 ## Features
 
 - **Free Defibros at the truck** — Auto-grants the vanilla DEFIBRO revive bot at the truck each level, so a fresh run isn't gated behind its ~$44,000 shop price. The number granted scales with your lobby (a flat base plus a per-player amount). Includes an optional **Defibro shop-price override** if you'd rather just make it cheaper than free.
-- **Free starter weapon** — Spawns a chosen weapon at the truck at run start. By default you start with a **Tranq Gun per player on level 1** — a leg-up past the bad early-shop RNG (no gun in the first shops) without every-level power creep. Pick any of the game's weapons (guns + melee), grant one per player or one total, and choose level-1-only or every level.
+- **Free starter weapon** — Spawns a chosen weapon at the truck at run start. By default you start with a **Tranq Gun per player on level 1** — a leg-up past the bad early-shop RNG (no gun in the first shops) without every-level power creep. Pick any of the game's weapons or magic staffs (guns, melee, and the Torque / Void / Zero-Gravity staffs), grant one per player or one total, and choose level-1-only or every level.
 
 Both features are independent — enable either, both, or neither. The mod is general-purpose: it is **not** solo-gated and works for any number of players.
 
@@ -28,7 +28,7 @@ Both features are independent — enable either, both, or neither. The mod is ge
 
 ### `[Free Item]` weapon picker
 
-`Item` is a dropdown of the game's weapons (guns + melee) — e.g. the Tranq Gun (default), Stun Gun, Handgun, Shotgun, Sword, Frying Pan, and more. `PerPlayer` grants one per player when on (default) or exactly one when off. `FirstLevelOnly` (default on) grants only on level 1; turn it off to re-grant every level.
+`Item` is a dropdown of the game's weapons and magic staffs (guns, melee, and the Torque / Void / Zero-Gravity staffs) — e.g. the Tranq Gun (default), Stun Gun, Handgun, Shotgun, Sword, Frying Pan, and more. `PerPlayer` grants one per player when on (default) or exactly one when off. `FirstLevelOnly` (default on) grants only on level 1; turn it off to re-grant every level.
 
 ## Bug reports
 

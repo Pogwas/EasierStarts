@@ -26,13 +26,14 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<bool> FreeItemPerPlayer;
     internal static ConfigEntry<bool> FreeItemFirstLevelOnly;
 
-    // Curated weapons roster for the [Free Item] dropdown (asset names from resources.assets).
+    // Curated weapons + magic staffs roster for the [Free Item] dropdown (asset names from resources.assets).
     private static readonly string[] WeaponItems = new[]
     {
         "Item Gun Tranq", "Item Gun Stun", "Item Gun Handgun", "Item Gun Shotgun",
         "Item Gun Laser", "Item Gun Shockwave",
         "Item Melee Sword", "Item Melee Sledge Hammer", "Item Melee Frying Pan",
         "Item Melee Baseball Bat", "Item Melee Inflatable Hammer", "Item Melee Stun Baton",
+        "Item Staff Torque", "Item Staff Void", "Item Staff Zero Gravity",
     };
 
     private Harmony _harmony;
@@ -69,7 +70,7 @@ public class Plugin : BaseUnityPlugin
         FreeItem = Config.Bind(
             "Free Item", "Item", "Item Gun Tranq",
             new ConfigDescription(
-                "Which weapon to grant for free at the truck at run start. Defaults to the Tranq Gun.",
+                "Which weapon or magic staff to grant for free at the truck at run start. Defaults to the Tranq Gun.",
                 new AcceptableValueList<string>(WeaponItems)));
 
         FreeItemPerPlayer = Config.Bind(
