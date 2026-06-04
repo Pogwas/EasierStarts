@@ -21,9 +21,19 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<int> DefibrosPerPlayer;
     internal static ConfigEntry<int> StorePrice;
 
-    internal static ConfigEntry<bool> FreeItemsEnabled;
-    internal static ConfigEntry<string> FreeItems;
-    internal static ConfigEntry<bool> FreeItemsFirstLevelOnly;
+    internal static ConfigEntry<bool> FreeItemEnabled;
+    internal static ConfigEntry<string> FreeItem;
+    internal static ConfigEntry<bool> FreeItemPerPlayer;
+    internal static ConfigEntry<bool> FreeItemFirstLevelOnly;
+
+    // Curated weapons roster for the [Free Item] dropdown (asset names from resources.assets).
+    private static readonly string[] WeaponItems = new[]
+    {
+        "Item Gun Tranq", "Item Gun Stun", "Item Gun Handgun", "Item Gun Shotgun",
+        "Item Gun Laser", "Item Gun Shockwave",
+        "Item Melee Sword", "Item Melee Sledge Hammer", "Item Melee Frying Pan",
+        "Item Melee Baseball Bat", "Item Melee Inflatable Hammer", "Item Melee Stun Baton",
+    };
 
     private Harmony _harmony;
     private static GameObject _behaviourGO;
@@ -52,17 +62,23 @@ public class Plugin : BaseUnityPlugin
                 "Defibro shop price in thousands of dollars — the shown number x1000 is the price (e.g. 5 = $5,000, 50 = $50,000). 0 leaves the vanilla price (~$44,000) untouched. Range 0-50, +$1,000 per step. Default 5 = $5,000.",
                 new AcceptableValueRange<int>(0, 50)));
 
-        FreeItemsEnabled = Config.Bind(
-            "Free Items", "Enabled", true,
-            "Master toggle for the free-item grant. When true, the items in the Items list are spawned at the truck (level 1 only by default — see FirstLevelOnly).");
+        FreeItemEnabled = Config.Bind(
+            "Free Item", "Enabled", true,
+            "Master toggle for the free starter weapon granted at the truck.");
 
-        FreeItems = Config.Bind(
-            "Free Items", "Items", "Item Gun Tranq:1/player",
-            "Comma-separated list of items to free-grant at the truck. Each entry is 'name:count' (a flat count) or 'name:count/player' (count multiplied by the number of players). 'name' matches an item's asset name or display name (e.g. 'Item Gun Tranq' / 'Tranq Gun'; a partial name like 'tranq' also works). Default grants one Tranq Gun per player. Leave empty to grant nothing. Example: \"Item Gun Tranq:1/player, Item Health Pack Small:2\".");
+        FreeItem = Config.Bind(
+            "Free Item", "Item", "Item Gun Tranq",
+            new ConfigDescription(
+                "Which weapon to grant for free at the truck at run start. Defaults to the Tranq Gun.",
+                new AcceptableValueList<string>(WeaponItems)));
 
-        FreeItemsFirstLevelOnly = Config.Bind(
-            "Free Items", "FirstLevelOnly", true,
-            "When true (default), the items are granted only on the first level of a run (a run-start leg-up). When false, they are re-granted at the truck every level (items don't carry across levels, so this keeps a starter weapon always available).");
+        FreeItemPerPlayer = Config.Bind(
+            "Free Item", "PerPlayer", true,
+            "When true (default), one is granted per player (scales with lobby size). When false, exactly one is granted regardless of lobby size.");
+
+        FreeItemFirstLevelOnly = Config.Bind(
+            "Free Item", "FirstLevelOnly", true,
+            "When true (default), the weapon is granted only on the first level of a run (a run-start leg-up). When false, it is re-granted at the truck every level (items don't carry across levels).");
 
         _harmony = new Harmony(PluginGuid);
         _harmony.PatchAll();
