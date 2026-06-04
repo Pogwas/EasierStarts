@@ -10,6 +10,10 @@ internal static class FreeItemGranter
     private static string _cachedFrom;          // the Item config string _cached reflects
     private static bool _warned;                // gave up on the current config (bad name)
     private static LevelGenerator _lastGrantedLevel;
+    private static LevelGenerator _deferLevel;   // level whose defer-watch window is running
+    private static float _deferStartTime;        // Time.time the watch window started
+    private static float _lastPollTime;          // Time.time of the last scene weapon scan
+    private const float PollInterval = 0.3f;     // throttle the scene scan to a few times/sec
 
     public static void Tick()
     {
@@ -32,6 +36,36 @@ internal static class FreeItemGranter
 
         var truck = TruckSafetySpawnPoint.instance;
         if (truck == null) return; // truck not in scene yet — retry next tick
+
+        // Defer-to-other-mods gate: watch the start of the level for another mod's starter weapon
+        // (equipped OR lying at the truck) and skip our grant if one appears, so we don't stack a
+        // second weapon on top of mods like StartWithGun or Let me Solo Them. We poll across a
+        // window rather than checking once, because other mods can spawn a frame or two after us.
+        if (Plugin.FreeItemDeferToOtherMods.Value)
+        {
+            // Start (or restart, on a new level) the watch window.
+            if (!ReferenceEquals(_deferLevel, lg))
+            {
+                _deferLevel = lg;
+                _deferStartTime = Time.time;
+                _lastPollTime = float.NegativeInfinity; // scan immediately on the first tick
+            }
+
+            // Throttled scan: defer the moment another mod's weapon is present.
+            if (Time.time - _lastPollTime >= PollInterval)
+            {
+                _lastPollTime = Time.time;
+                if (ForeignWeaponPresent())
+                {
+                    Plugin.Log.LogInfo("[FreeItem] Another mod's weapon detected — deferring (no grant this level).");
+                    _lastGrantedLevel = lg; // mark handled so we stop watching this level
+                    return;
+                }
+            }
+
+            // No weapon yet — keep watching until the window expires, then fall through to grant.
+            if (Time.time - _deferStartTime < Plugin.FreeItemDeferCheckDelay.Value) return;
+        }
 
         // Resolve the configured weapon (re-resolve if the config changed).
         string want = Plugin.FreeItem.Value ?? "";
@@ -85,5 +119,46 @@ internal static class FreeItemGranter
             }
         }
         Plugin.Log.LogInfo($"[FreeItem] Granted {spawned}/{count} '{_cached.itemName}' at the truck ({players} player(s)).");
+    }
+
+    // True if another mod's starter weapon is present in the scene — whether equipped in an
+    // inventory slot OR lying loose at the truck. A scene-wide scan covers both, because both
+    // equipped and dropped items carry an ItemAttributes in the scene. This runs only during the
+    // short watch window at level start, and only before we've granted our own weapon, so it
+    // never sees our own item.
+    private static bool ForeignWeaponPresent()
+    {
+        var all = Object.FindObjectsOfType<ItemAttributes>(true);
+        foreach (var attrs in all)
+        {
+            if (attrs == null) continue;
+            if (IsWeaponItem(attrs.item, attrs.gameObject)) return true;
+        }
+        return false;
+    }
+
+    private static bool IsWeaponItem(Item item, GameObject go)
+    {
+        // Primary: the item's category enum — covers every gun and melee (and a staff too, if the
+        // game tags it 'launcher').
+        if (item != null)
+        {
+            var t = item.itemType;
+            if (t == SemiFunc.itemType.gun || t == SemiFunc.itemType.melee || t == SemiFunc.itemType.launcher)
+                return true;
+        }
+
+        // Fallback for magic staffs: Torque / Void / Zero Gravity share no base class and their
+        // itemType is not guaranteed to be a weapon category, so detect them by component name.
+        if (go != null)
+        {
+            foreach (var comp in go.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                if (comp == null) continue;
+                if (comp.GetType().Name.StartsWith("ItemStaff", System.StringComparison.Ordinal))
+                    return true;
+            }
+        }
+        return false;
     }
 }

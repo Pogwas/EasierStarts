@@ -24,11 +24,13 @@ Both features are independent — enable either, both, or neither. The mod is ge
 | Section | What it controls |
 |---|---|
 | `Defibro` | Free Defibro count at the truck (`DefibrosBase` + `DefibrosPerPlayer` × players) and the Defibro shop price (`StorePrice`, in thousands; 0 = vanilla) |
-| `Free Item` | The free starter weapon: which weapon (`Item`, a dropdown), one per player vs one total (`PerPlayer`), and level-1-only vs every level (`FirstLevelOnly`) |
+| `Free Item` | The free starter weapon: which weapon (`Item`, a dropdown), one per player vs one total (`PerPlayer`), level-1-only vs every level (`FirstLevelOnly`), and whether to defer to other weapon-granting mods (`DeferToOtherMods`, `DeferCheckDelay`) |
 
 ### `[Free Item]` weapon picker
 
 `Item` is a dropdown of the game's weapons and magic staffs (guns, melee, and the Torque / Void / Zero-Gravity staffs) — e.g. the Tranq Gun (default), Stun Gun, Handgun, Shotgun, Sword, Frying Pan, and more. `PerPlayer` grants one per player when on (default) or exactly one when off. `FirstLevelOnly` (default on) grants only on level 1; turn it off to re-grant every level.
+
+`DeferToOtherMods` (default on) makes Easier Starts play nice with other starter-weapon mods: at the start of the level it watches for another mod's weapon — one you have equipped *or* one lying at the truck — and skips its own grant if it finds one, so you don't end up with two starter weapons (handy alongside mods like StartWithGun or Let me Solo Them). `DeferCheckDelay` (default 4s) is how long it watches before granting; raise it if a slower mod spawns its weapon later. Turn `DeferToOtherMods` off to always grant regardless.
 
 ## Bug reports
 
@@ -44,7 +46,8 @@ Please open an [Issue](https://github.com/Pogwas/EasierStarts/issues) and includ
 
 ### 0.2.0
 
-- **Free starter weapon** — new `[Free Item]` feature: grants a chosen weapon free at the truck at run start. Default is one Tranq Gun per player on level 1. Pick the weapon from a dropdown (guns + melee), toggle per-player, and choose level-1-only vs every level.
+- **Free starter weapon** — new `[Free Item]` feature: grants a chosen weapon free at the truck at run start. Default is one Tranq Gun per player on level 1. Pick the weapon from a dropdown (guns, melee, and magic staffs), toggle per-player, and choose level-1-only vs every level.
+- **Defer to other mods** — `[Free Item]` can detect another mod's starter weapon (equipped or dropped at the truck) and skip its own grant so weapons don't stack (`DeferToOtherMods`, `DeferCheckDelay`).
 
 ### 0.1.0
 

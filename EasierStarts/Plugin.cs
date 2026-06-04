@@ -25,6 +25,8 @@ public class Plugin : BaseUnityPlugin
     internal static ConfigEntry<string> FreeItem;
     internal static ConfigEntry<bool> FreeItemPerPlayer;
     internal static ConfigEntry<bool> FreeItemFirstLevelOnly;
+    internal static ConfigEntry<bool> FreeItemDeferToOtherMods;
+    internal static ConfigEntry<float> FreeItemDeferCheckDelay;
 
     // Curated weapons + magic staffs roster for the [Free Item] dropdown (asset names from resources.assets).
     private static readonly string[] WeaponItems = new[]
@@ -80,6 +82,16 @@ public class Plugin : BaseUnityPlugin
         FreeItemFirstLevelOnly = Config.Bind(
             "Free Item", "FirstLevelOnly", true,
             "When true (default), the weapon is granted only on the first level of a run (a run-start leg-up). When false, it is re-granted at the truck every level (items don't carry across levels).");
+
+        FreeItemDeferToOtherMods = Config.Bind(
+            "Free Item", "DeferToOtherMods", true,
+            "When true (default), Easier Starts watches the start of the level for another mod's starter weapon (one you have equipped OR one lying at the truck) and skips its own free-weapon grant if it finds one — so it won't stack a second weapon on top of mods like StartWithGun or Let me Solo Them. Set false to always grant regardless.");
+
+        FreeItemDeferCheckDelay = Config.Bind(
+            "Free Item", "DeferCheckDelay", 4.0f,
+            new ConfigDescription(
+                "Maximum seconds to watch for another mod's weapon before granting yours. Easier Starts checks several times across this window and defers the moment it spots a weapon; if none appears by the end, it grants. Raise this if a slow mod spawns its weapon later. Only used when DeferToOtherMods is on. Default 4.",
+                new AcceptableValueRange<float>(0f, 10f)));
 
         _harmony = new Harmony(PluginGuid);
         _harmony.PatchAll();
